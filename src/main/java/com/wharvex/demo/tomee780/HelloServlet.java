@@ -24,7 +24,7 @@ public class HelloServlet extends HttpServlet {
     try {
       Context initContext = new InitialContext();
       Context envContext = (Context) initContext.lookup("java:/comp/env");
-      DataSource ds = (DataSource) envContext.lookup("jdbc/myoracle");
+      DataSource ds = (DataSource) envContext.lookup("myoracle");
       Connection conn = ds.getConnection();
       if (conn != null) {
         messageBuilder.append("Connected to the database!").append("<br>");
