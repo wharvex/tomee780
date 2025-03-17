@@ -1,59 +1,71 @@
 package com.wharvex.demo.tomee780;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import javax.naming.*;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
-  private String message;
+  private String message1 = "Hello World!";
+  private String message2;
+  private String message3;
 
-  public void buildMessage1() {
-    StringBuilder messageBuilder = new StringBuilder();
-    messageBuilder.append("Hello World!").append("<br>");
+  public void buildMessage2() {
+    StringBuilder messageBuilder2 = new StringBuilder();
+    String jndiName = "java:";
+    messageBuilder2.append("<ul>");
     try {
       Context initContext = new InitialContext();
-      Context envContext = (Context) initContext.lookup("java:/comp/env");
-      DataSource ds = (DataSource) envContext.lookup("myoracle");
-      Connection conn = ds.getConnection();
-      if (conn != null) {
-        messageBuilder.append("Connected to the database!").append("<br>");
-        System.out.println("Connected to the database!");
-        Statement statement = conn.createStatement();
-        ResultSet resultSet =
-            statement.executeQuery("select * from testtable");
-        messageBuilder.append("Select * from testtable").append("<br>");
-        while (resultSet.next()) {
-          String testColVal = resultSet.getString("testcol");
-          messageBuilder.append("testcol: ").append(testColVal)
-              .append("<br>");
-        }
-        resultSet.close();
-        statement.close();
-        conn.close();
-      } else {
-        messageBuilder.append("Failed to connect to the database!")
-            .append("<br>");
-        System.out.println("Failed to make connection!");
-      }
-    } catch (NamingException | SQLException e) {
-      throw new RuntimeException(e);
+      getNamesRecursive(jndiName, messageBuilder2, initContext);
+    } catch (NamingException e) {
+      messageBuilder2.append(
+          "<li>Encountered NamingException creating InitialContext</li>");
     }
-    message = messageBuilder.toString();
+    messageBuilder2.append("</ul>");
+    message2 = messageBuilder2.toString();
+  }
+
+  public void getNamesRecursive(
+      String name,
+      StringBuilder messageBuilder, Context context) {
+    try {
+      NamingEnumeration<NameClassPair> nameChoices =
+          context.list(name);
+      if (nameChoices == null) {
+        messageBuilder.append("<li>context.list returned null</li>");
+        return;
+      }
+      if (!nameChoices.hasMore()) {
+        messageBuilder.append("<li>context.list returned no names</li>");
+        return;
+      }
+      while (nameChoices.hasMore()) {
+        // Get data.
+        NameClassPair nameClassPair = nameChoices.next();
+        String newName = nameClassPair.getName();
+        String className = "className: " + nameClassPair.getClassName();
+        String nameContinuationToken = name.equals("java:") ? "" : "/";
+
+        // Accumulate list.
+        messageBuilder.append("<li>").append(newName).append(" (")
+            .append(className).append(")").append("</li>");
+
+        // Nest and recurse.
+        messageBuilder.append("<ul>");
+        getNamesRecursive(name + nameContinuationToken + newName,
+            messageBuilder, context);
+        messageBuilder.append("</ul>");
+      }
+    } catch (NamingException e) {
+      messageBuilder.append("<li>Encountered NamingException</li>");
+    }
   }
 
   public void init() {
-    message = "Hello World!";
+    buildMessage2();
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -63,7 +75,9 @@ public class HelloServlet extends HttpServlet {
     // Hello
     PrintWriter out = response.getWriter();
     out.println("<html><body>");
-    out.println("<h1>" + message + "</h1>");
+    out.println("<h1>" + message1 + "</h1>");
+    out.println("<p>" + message2 + "</p>");
+    out.println("<h2>" + message3 + "</h2>");
     out.println("</body></html>");
   }
 
