@@ -9,9 +9,11 @@ import javax.naming.*;
 
 @WebServlet(name = "helloServlet", value = "/hello-servlet")
 public class HelloServlet extends HttpServlet {
-  private String message1 = "Hello World!";
+  private String message0 = "JNDI Inspection Servlet";
+  private String message1 = "Initial Context Names";
   private String message2;
-  private String message3;
+  private String message3 = "Environment Entries";
+  private String message4;
 
   public void buildMessage2() {
     StringBuilder messageBuilder2 = new StringBuilder();
@@ -64,8 +66,28 @@ public class HelloServlet extends HttpServlet {
     }
   }
 
+  public void buildMessage4() {
+    StringBuilder messageBuilder = new StringBuilder();
+    messageBuilder.append("<ul>");
+    try {
+      Context initContext = new InitialContext();
+      Context envContext = (Context) initContext.lookup("java:comp/env");
+      var x = envContext.getEnvironment();
+      for (var entry : x.entrySet()) {
+        messageBuilder.append("<li>").append(entry.getKey()).append(" = ")
+            .append(entry.getValue()).append("</li>");
+      }
+      messageBuilder.append("<li>dummy entry</li>");
+    } catch (NamingException e) {
+      messageBuilder.append("<li>Encountered NamingException</li>");
+    }
+    messageBuilder.append("</ul>");
+    message4 = messageBuilder.toString();
+  }
+
   public void init() {
     buildMessage2();
+    buildMessage4();
   }
 
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -75,9 +97,11 @@ public class HelloServlet extends HttpServlet {
     // Hello
     PrintWriter out = response.getWriter();
     out.println("<html><body>");
-    out.println("<h1>" + message1 + "</h1>");
+    out.println("<h1>" + message0 + "</h1>");
+    out.println("<h2>" + message1 + "</h2>");
     out.println("<p>" + message2 + "</p>");
     out.println("<h2>" + message3 + "</h2>");
+    out.println("<p>" + message4 + "</p>");
     out.println("</body></html>");
   }
 
