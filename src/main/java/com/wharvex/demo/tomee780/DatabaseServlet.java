@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 @WebServlet(name = "databaseServlet", value = "/database-servlet")
 public class DatabaseServlet extends HttpServlet {
@@ -23,8 +25,18 @@ public class DatabaseServlet extends HttpServlet {
       Context initContext = new InitialContext();
       Context envContext = (Context) initContext.lookup("java:/comp/env");
       DataSource ds = (DataSource) envContext.lookup("MyOracleDB");
-      try (Connection connection = ds.getConnection()) {
-        messageBuilder.append("Connection established: ").append(connection);
+      try (Connection conn = ds.getConnection();
+           Statement statement = conn.createStatement();
+           ResultSet resultSet =
+               statement.executeQuery("select * from testtable")) {
+        messageBuilder.append("Connection established: ").append(conn)
+            .append("<br>");
+        messageBuilder.append("Select * from testtable").append("<br>");
+        while (resultSet.next()) {
+          String testColVal = resultSet.getString("testcol");
+          messageBuilder.append("testcol: ").append(testColVal)
+              .append("<br>");
+        }
       }
     } catch (Exception e) {
       messageBuilder.append(e);
