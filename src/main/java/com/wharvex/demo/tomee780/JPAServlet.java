@@ -1,5 +1,6 @@
 package com.wharvex.demo.tomee780;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,14 +8,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 @WebServlet(name = "jpaServlet", value = "/jpa-servlet")
 public class JPAServlet extends HttpServlet {
@@ -24,9 +19,22 @@ public class JPAServlet extends HttpServlet {
   public void init() {
     StringBuilder messageBuilder = new StringBuilder();
     try (EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-        "MyOracleDBPU")) {
+        "MyOracleDBPU");
+         EntityManager em = emf.createEntityManager()
+    ) {
       messageBuilder.append("EntityManagerFactory created: ").append(emf)
           .append("<br>");
+      messageBuilder.append("EntityManager created: ").append(em)
+          .append("<br>");
+      em.getTransaction().begin();
+      messageBuilder.append("Transaction started").append("<br>");
+      Employee employee = new Employee();
+      employee.setId("1");
+      employee.setFirstName("Clare");
+      employee.setLastName("Churcher");
+      em.persist(employee);
+      em.getTransaction().commit();
+      messageBuilder.append("Transaction committed").append("<br>");
     } catch (Exception e) {
       messageBuilder.append(e);
     }
