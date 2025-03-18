@@ -14,5 +14,8 @@
 <p>
     <a href="database-servlet">Database Servlet</a>
 </p>
+<p>
+    <a href="jpa-servlet">JPA Servlet</a>
+</p>
 </body>
 </html>

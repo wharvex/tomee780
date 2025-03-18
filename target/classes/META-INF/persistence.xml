@@ -6,4 +6,15 @@
     <persistence-unit name="default">
 
     </persistence-unit>
+    <persistence-unit name="MyOracleDBPU">
+        <jta-data-source>java:comp/env/MyOracleDB</jta-data-source>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create"/>
+            <property name="jakarta.persistence.schema-generation.scripts.create-target" value="META-INF/create.sql"/>
+            <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="META-INF/drop.sql"/>
+            <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521/xepdb1"/>
+        </properties>
+    </persistence-unit>
 </persistence>
