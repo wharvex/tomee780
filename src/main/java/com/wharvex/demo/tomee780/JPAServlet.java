@@ -28,11 +28,17 @@ public class JPAServlet extends HttpServlet {
           .append("<br>");
       em.getTransaction().begin();
       messageBuilder.append("Transaction started").append("<br>");
+/*
       Employee employee = new Employee();
-      employee.setId("1");
+      employee.setId("3");
       employee.setFirstName("Clare");
-      employee.setLastName("Churcher");
+      employee.setLastName("Chuuurcher");
       em.persist(employee);
+*/
+      Book book = new Book();
+      book.setTitle("The Great Gatsby");
+      book.setYearpublished((short) 1925);
+      em.persist(book);
       em.getTransaction().commit();
       messageBuilder.append("Transaction committed").append("<br>");
     } catch (Exception e) {

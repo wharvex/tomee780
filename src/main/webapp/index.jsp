@@ -17,5 +17,8 @@
 <p>
     <a href="jpa-servlet">JPA Servlet</a>
 </p>
+<p>
+    <a href="form-servlet">Form</a>
+</p>
 </body>
 </html>

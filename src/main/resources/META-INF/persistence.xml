@@ -9,11 +9,17 @@
     <persistence-unit name="MyOracleDBPU">
         <jta-data-source>java:comp/env/MyOracleDB</jta-data-source>
         <class>com.wharvex.demo.tomee780.Employee</class>
+        <class>com.wharvex.demo.tomee780.Book</class>
+        <class>com.wharvex.demo.tomee780.Person</class>
+        <class>com.wharvex.demo.tomee780.PersonRel</class>
         <properties>
+            <!--
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="jakarta.persistence.schema-generation.scripts.action" value="drop-and-create"/>
-            <property name="jakarta.persistence.schema-generation.scripts.create-target" value="create.sql"/>
-            <property name="jakarta.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
+            <property name="jakarta.persistence.schema-generation.create-source" value="script"/>
+            <property name="jakarta.persistence.schema-generation.create-script-source" value="create.sql"/>
+            <property name="jakarta.persistence.schema-generation.drop-source" value="script"/>
+            <property name="jakarta.persistence.schema-generation.drop-script-source" value="drop.sql"/>
+            -->
             <property name="jakarta.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:oracle:thin:@127.0.0.1:1521/xepdb1"/>
         </properties>
