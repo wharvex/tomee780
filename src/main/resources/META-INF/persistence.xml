@@ -12,6 +12,7 @@
         <class>com.wharvex.demo.tomee780.Book</class>
         <class>com.wharvex.demo.tomee780.Person</class>
         <class>com.wharvex.demo.tomee780.PersonRel</class>
+        <class>com.wharvex.demo.tomee780.ParentChildRel</class>
         <properties>
             <!--
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>

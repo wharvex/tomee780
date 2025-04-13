@@ -28,19 +28,7 @@ public class JPAServlet extends HttpServlet {
           .append("<br>");
       em.getTransaction().begin();
       messageBuilder.append("Transaction started").append("<br>");
-/*
-      Employee employee = new Employee();
-      employee.setId("3");
-      employee.setFirstName("Clare");
-      employee.setLastName("Chuuurcher");
-      em.persist(employee);
-*/
-      Book book = new Book();
-      book.setTitle("The Great Gatsby");
-      book.setYearpublished((short) 1925);
-      em.persist(book);
-      em.getTransaction().commit();
-      messageBuilder.append("Transaction committed").append("<br>");
+      persistNewPerson(em, messageBuilder);
     } catch (Exception e) {
       messageBuilder.append(e);
     }
@@ -58,5 +46,25 @@ public class JPAServlet extends HttpServlet {
   }
 
   public void destroy() {
+  }
+
+  private void persistNewBook(EntityManager em,
+                              StringBuilder messageBuilder) {
+    Book book = new Book();
+    book.setTitle("The Great Gatsby");
+    book.setYearpublished((short) 1925);
+    em.persist(book);
+    em.getTransaction().commit();
+    messageBuilder.append("Transaction committed").append("<br>");
+  }
+
+  private void persistNewPerson(EntityManager em,
+                                StringBuilder messageBuilder) {
+    Person person = new Person();
+    person.setFirstName("John");
+    person.setLastName("Smith");
+    em.persist(person);
+    em.getTransaction().commit();
+    messageBuilder.append("Transaction committed").append("<br>");
   }
 }
